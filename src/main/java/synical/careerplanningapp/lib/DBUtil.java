@@ -15,6 +15,7 @@ public class DBUtil {
     private static MongoClient mongoClient;
     private static MongoDatabase database;
 
+    // MAIN METHOD TO START DATABASE CONNECTION
     public static void init() {
         try {
             MongoClientSettings settings = MongoClientSettings.builder()
@@ -25,16 +26,17 @@ public class DBUtil {
             database.runCommand(new Document("ping", 1));
             print("Successfully established connection to database.");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
+    // MAIN METHOD TO CLOSE DATABASE CONNECTION
     public static void close() {
         try {
             mongoClient.close();
             print("Successfully closed connection to database.");
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

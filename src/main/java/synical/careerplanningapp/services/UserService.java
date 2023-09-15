@@ -5,6 +5,7 @@ public class UserService {
 
     }
 
+    // LOGIN MASTER
     public static int login() {
         return 1;
     }
