@@ -4,10 +4,12 @@ plugins {
     id 'org.javamodularity.moduleplugin' version '1.8.12'
     id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'org.beryx.jlink' version '2.25.0'
+    id 'org.springframework.boot' version '3.1.3'
+    id 'io.spring.dependency-management' version '1.1.3'
 }
 
 group 'synical'
-version '1.0-SNAPSHOT'
+version '0.0.1-alpha'
 
 repositories {
     mavenCentral()
@@ -37,8 +39,10 @@ javafx {
 dependencies {
     implementation('org.controlsfx:controlsfx:11.1.2')
     implementation('org.kordamp.ikonli:ikonli-javafx:12.3.1')
+    implementation('org.springframework.boot:spring-boot-starter-data-mongodb:3.0.7')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testImplementation('org.springframework.boot:spring-boot-starter-test:3.1.0')
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
