@@ -4,6 +4,7 @@ import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 
 import static synical.careerplanningapp.lib.Function.print;
@@ -38,5 +39,16 @@ public class DBUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static MongoCollection<Document> getCollection(String cName) {
+        return database.getCollection(cName);
+    }
+
+    // GET ENTRY FROM DATABASE
+    public static Document getDocument(String cName, Filters filter) {
+        MongoCollection<Document> collection = getCollection(cName);
+
+        return null;
     }
 }

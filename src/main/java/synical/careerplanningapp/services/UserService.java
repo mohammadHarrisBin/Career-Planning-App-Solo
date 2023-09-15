@@ -6,7 +6,8 @@ public class UserService {
     }
 
     // LOGIN MASTER
-    public static int login() {
-        return 1;
+    public static int login(String username, String password) {
+
+        return 0;
     }
 }

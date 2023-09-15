@@ -33,7 +33,7 @@ public class ConsoleApp {
                     // LOG IN OPTION
 
                     print("User chose log in.");
-                    userid = UserService.login();
+                    userid = UserService.login("Tester 1", "Tester 1");
                 }
                 else if (option == 2) {
                     // SIGN UP OPTION
