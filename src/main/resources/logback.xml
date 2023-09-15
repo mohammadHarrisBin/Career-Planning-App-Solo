@@ -1,0 +1,22 @@
+<configuration>
+    <!-- Disable Logback status printing -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <!-- Define a console appender with your desired log format -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set the root logger to log at the "INFO" level and use the "CONSOLE" appender -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- Disable Logback internal logging -->
+    <logger name="ch.qos.logback" level="OFF" />
+
+    <!-- Set the log level for the MongoDB driver to "ERROR" -->
+    <logger name="org.mongodb.driver" level="ERROR" />
+</configuration>
