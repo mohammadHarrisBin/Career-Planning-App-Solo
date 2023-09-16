@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ConsoleApp" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="synical.careerplanningapp.ConsoleApp" />
+    <module name="careerplanningapp.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
