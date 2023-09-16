@@ -1,5 +1,7 @@
 package synical.careerplanningapp.lib;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
 
 public class Function {
@@ -83,7 +85,35 @@ public class Function {
         }
     }
 
+    public static void header(String title) {
+        line("=", 100);
+        System.out.println(title.toUpperCase());
+        line("=", 100);
+    }
+
     public static void print(String text) {
         System.out.printf(">>> %s\n", text);
+    }
+
+    public static String encode(String text) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            byte[] encodedHash = digest.digest(text.getBytes());
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xFF & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return text;
     }
 }

@@ -4,7 +4,9 @@ import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import javafx.css.converter.DurationConverter;
 import org.bson.Document;
 
 import static synical.careerplanningapp.lib.Function.print;
@@ -16,7 +18,7 @@ public class DBUtil {
     private static MongoClient mongoClient;
     private static MongoDatabase database;
 
-    // MAIN METHOD TO START DATABASE CONNECTION
+    // establish database connection
     public static void init() {
         try {
             MongoClientSettings settings = MongoClientSettings.builder()
@@ -31,7 +33,7 @@ public class DBUtil {
         }
     }
 
-    // MAIN METHOD TO CLOSE DATABASE CONNECTION
+    // close database connection
     public static void close() {
         try {
             mongoClient.close();
@@ -41,14 +43,24 @@ public class DBUtil {
         }
     }
 
+    // return collection
     public static MongoCollection<Document> getCollection(String cName) {
         return database.getCollection(cName);
     }
 
-    // GET ENTRY FROM DATABASE
-    public static Document getDocument(String cName, Filters filter) {
+    // get document entry
+    public static Document getDocument(String cName, Document query) {
         MongoCollection<Document> collection = getCollection(cName);
+        return collection.find(query).first();
+    }
 
-        return null;
+    // insert entry
+    public static InsertOneResult insertOne(MongoCollection<Document> collection, Document document) {
+        return collection.insertOne(document);
+    }
+
+    // delete entry
+    public static DeleteResult deleteOne(MongoCollection<Document> collection, Document document) {
+        return collection.deleteOne(document);
     }
 }
