@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class Function {
     public static String getUserInputString(String prompt) {
-        System.out.print(prompt);
+        System.out.print(Settings.input + prompt);
         return new java.util.Scanner(System.in).nextLine();
     }
 
@@ -72,7 +72,7 @@ public class Function {
     }
 
     public static void line(String character, int length) {
-        System.out.println(character.repeat(length));
+        System.out.println(Settings.normal + character.repeat(length));
     }
 
     public static void displayMenu(String title, String[] menu) {
@@ -81,7 +81,7 @@ public class Function {
         line("=", 100);
 
         for (int i = 0; i < menu.length; i++) {
-            System.out.printf("%-3s %s\n", (i + 1) + ".", menu[i]);
+            System.out.printf(Settings.normal + "%-3s %s\n", (i + 1) + ".", menu[i]);
         }
     }
 
@@ -92,7 +92,15 @@ public class Function {
     }
 
     public static void print(String text) {
-        System.out.printf(">>> %s\n", text);
+        System.out.printf(Settings.print + ">>> %s\n", text);
+    }
+
+    public static void warn(String text) {
+        System.out.printf(Settings.warn + ">>> %s\n", text);
+    }
+
+    public static void error(String text) {
+        System.out.printf(Settings.error +  ">>> %s\n", text);
     }
 
     public static String encode(String text) {
