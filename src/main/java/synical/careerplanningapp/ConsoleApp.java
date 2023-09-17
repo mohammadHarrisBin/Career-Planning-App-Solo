@@ -4,8 +4,9 @@ import synical.careerplanningapp.services.UserService;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
-import static synical.careerplanningapp.lib.Function.header;
 import static synical.careerplanningapp.lib.Function.print;
+import static synical.careerplanningapp.lib.Function.warn;
+import static synical.careerplanningapp.lib.Function.header;
 
 public class ConsoleApp {
     private static int userid = 0;
@@ -31,7 +32,6 @@ public class ConsoleApp {
 
                 if (option == 1) {
                     // log in option
-                    // TODO: ask user for username and password; keep prompting input until account locked or logged in
                     header("logging in to account.");
 
                     String username = Function.getUserInputString("Username > ");
@@ -41,7 +41,6 @@ public class ConsoleApp {
                 }
                 else if (option == 2) {
                     // sign up new account
-                    // TODO: ask user for details
                     header("registering new account.");
 
                     String username = Function.getUserInputString("Username > ");
@@ -59,7 +58,7 @@ public class ConsoleApp {
                 }
                 else {
                     // invalid option
-                    print("Invalid option. Re-enter choice.");
+                    warn("Invalid option. Re-enter choice.");
                 }
             }
         }
