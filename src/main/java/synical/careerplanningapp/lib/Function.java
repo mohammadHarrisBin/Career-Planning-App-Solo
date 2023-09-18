@@ -95,6 +95,10 @@ public class Function {
         System.out.printf(Settings.print + ">>> %s\n", text);
     }
 
+    public static void print(String color, String text) {
+        System.out.printf(color + ">>> %s\n", text);
+    }
+
     public static void warn(String text) {
         System.out.printf(Settings.warn + ">>> %s\n", text);
     }

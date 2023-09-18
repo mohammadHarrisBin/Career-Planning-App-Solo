@@ -6,4 +6,5 @@ public class Settings {
     public static final String warn = "\033[0;33m";
     public static final String error = "\033[0;31m";
     public static final String input = "\033[1;97m";
+    public static final String database = "\033[0;35m";
 }

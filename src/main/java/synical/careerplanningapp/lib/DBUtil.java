@@ -9,6 +9,7 @@ import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
+import static synical.careerplanningapp.lib.Function.error;
 import static synical.careerplanningapp.lib.Function.print;
 
 public class DBUtil {
@@ -27,8 +28,9 @@ public class DBUtil {
             database = mongoClient.getDatabase(DATABASE);
 
             database.runCommand(new Document("ping", 1));
-            print("Successfully established connection to database.");
+            print(Settings.database, "Successfully established connection to database.");
         } catch (Exception e) {
+            error("Unable to established connection to database with the follow error: ");
             e.printStackTrace();
         }
     }
@@ -37,8 +39,9 @@ public class DBUtil {
     public static void close() {
         try {
             mongoClient.close();
-            print("Successfully closed connection to database.");
+            print(Settings.database, "Successfully closed connection to database.");
         } catch (Exception e) {
+            error("Unable to close connection to database with the following error: ");
             e.printStackTrace();
         }
     }
