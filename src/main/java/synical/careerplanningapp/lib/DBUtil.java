@@ -52,8 +52,7 @@ public class DBUtil {
     }
 
     // get document entry
-    public static Document getDocument(String cName, Document query) {
-        MongoCollection<Document> collection = getCollection(cName);
+    public static Document getDocument(MongoCollection<Document> collection, Document query) {
         return collection.find(query).first();
     }
 

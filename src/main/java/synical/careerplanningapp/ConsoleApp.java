@@ -1,5 +1,6 @@
 package synical.careerplanningapp;
 
+import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import synical.careerplanningapp.services.UserService;
 import synical.careerplanningapp.lib.DBUtil;
@@ -9,6 +10,7 @@ import static synical.careerplanningapp.lib.Function.*;
 
 public class ConsoleApp {
     private static String username = "";
+    private static final MongoCollection<Document> userCollection = DBUtil.getCollection("user");
 
     public static void main(String[] args) {
         print("Career planning app has started.");
@@ -71,7 +73,7 @@ public class ConsoleApp {
     private static void start() {
         int mainOption = -1;
         Document query = new Document("username", username);
-        boolean isAdmin = DBUtil.getDocument("user", query).getString("accountType").equals("admin");
+        boolean isAdmin = DBUtil.getDocument(userCollection, query).getString("accountType").equals("admin");
 
         while (mainOption != 0) {
             displayMainPageMenu();
@@ -80,11 +82,16 @@ public class ConsoleApp {
             if (mainOption == 1) {
                 // user menu
                 // TODO: display sub choices for user
-                if (isAdmin) {
-                    displayAdminUserMenu();
-                }
-                else {
-                    displayMemberUserMenu();
+                int subOption = -1;
+
+                while (subOption != 0) {
+                    subOption = Function.getUserInputInt("Enter option > ");
+
+                    if (isAdmin) {
+                        displayAdminUserMenu();
+                    } else {
+                        displayMemberUserMenu();
+                    }
                 }
             }
             else if (mainOption == 2) {

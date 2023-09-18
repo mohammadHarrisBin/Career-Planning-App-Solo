@@ -18,7 +18,7 @@ public class UserService {
     public static boolean register(String iUsername, String iPassword, String accountType) {
         // check for any existing username
         Document query = new Document("username", iUsername);
-        Document document = DBUtil.getDocument("user", query);
+        Document document = DBUtil.getDocument(collection, query);
 
         // no same username exist
         if (document == null) {
@@ -50,7 +50,7 @@ public class UserService {
     public static boolean deleteUser(String iUsername) {
         // check if username exist
         Document query = new Document("username", iUsername);
-        Document document = DBUtil.getDocument("user", query);
+        Document document = DBUtil.getDocument(collection, query);
 
         // user account exist
         if (document != null) {
@@ -75,7 +75,7 @@ public class UserService {
     public static boolean login(String iUsername, String iPassword) {
         // check if username exist
         Document query = new Document("username", iUsername);
-        Document document = DBUtil.getDocument("user", query);
+        Document document = DBUtil.getDocument(collection, query);
 
         // user account exist
         if (document != null) {
