@@ -1,15 +1,14 @@
 package synical.careerplanningapp;
 
+import org.bson.Document;
 import synical.careerplanningapp.services.UserService;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
-import static synical.careerplanningapp.lib.Function.print;
-import static synical.careerplanningapp.lib.Function.warn;
-import static synical.careerplanningapp.lib.Function.header;
+import static synical.careerplanningapp.lib.Function.*;
 
 public class ConsoleApp {
-    private static int userid = 0;
+    private static String username = "";
 
     public static void main(String[] args) {
         print("Career planning app has started.");
@@ -23,7 +22,7 @@ public class ConsoleApp {
 
     // log in handler
     private static void login() {
-        while (userid == 0) {
+        while (username.isEmpty()) {
             int option = -1;
 
             while (option != 0) {
@@ -34,19 +33,23 @@ public class ConsoleApp {
                     // log in option
                     header("logging in to account.");
 
-                    String username = Function.getUserInputString("Username > ");
-                    String password = Function.getUserInputString("Password > ");
+                    String iUsername = Function.getUserInputString("Username > ");
+                    String iPassword = Function.getUserInputString("Password > ");
 
-                    UserService.login(username, password);
+                    boolean success = UserService.login(iUsername, iPassword);
+                    if (success) {
+                        username = iUsername;
+                        start();
+                    }
                 }
                 else if (option == 2) {
                     // sign up new account
                     header("registering new account.");
 
-                    String username = Function.getUserInputString("Username > ");
-                    String password = Function.getUserInputString("Password > ");
+                    String iUsername = Function.getUserInputString("Username > ");
+                    String iPassword = Function.getUserInputString("Password > ");
 
-                    UserService.register(username, password, "member");
+                    UserService.register(iUsername, iPassword, "member");
                 }
                 else if (option == 3) {
                     // stops application
@@ -67,6 +70,8 @@ public class ConsoleApp {
     // main menu handler
     private static void start() {
         int mainOption = -1;
+        Document query = new Document("username", username);
+        boolean isAdmin = DBUtil.getDocument("user", query).getString("accountType").equals("admin");
 
         while (mainOption != 0) {
             displayMainPageMenu();
@@ -75,7 +80,12 @@ public class ConsoleApp {
             if (mainOption == 1) {
                 // user menu
                 // TODO: display sub choices for user
-                print("display user menu");
+                if (isAdmin) {
+                    displayAdminUserMenu();
+                }
+                else {
+                    displayMemberUserMenu();
+                }
             }
             else if (mainOption == 2) {
                 // job opportunity menu
@@ -110,10 +120,11 @@ public class ConsoleApp {
                 // log out of account
 
                 print("Logged out.");
-                userid = 0;
+                username = "";
 
                 // bring user back to log in menu
                 login();
+                return;
             }
             else {
                 // invalid option
@@ -137,6 +148,16 @@ public class ConsoleApp {
     }
 
     // member user menu
+    private static void displayMemberUserMenu() {
+        String title = "USER MENU";
+        String[] options = {"View account details", "Delete account", "<<< Back"};
+        Function.displayMenu(title, options);
+    }
 
     // admin user menu
+    private static void displayAdminUserMenu() {
+        String title = "USER MENU";
+        String[] options = {"View account details", "View all accounts", "Delete account", "<<< Back"};
+        Function.displayMenu(title, options);
+    }
 }
