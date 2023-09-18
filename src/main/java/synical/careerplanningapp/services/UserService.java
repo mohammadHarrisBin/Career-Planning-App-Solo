@@ -116,8 +116,7 @@ public class UserService {
                         warn("Incorrect password. Try again.");
                         warn("You have " + (MAX_LOGIN_ATTEMPTS - attempts) + " attempts left.");
                     }
-
-                    return true;
+                    return false;
                 }
             }
         }
