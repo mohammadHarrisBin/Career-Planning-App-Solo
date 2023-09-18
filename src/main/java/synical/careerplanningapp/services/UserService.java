@@ -125,4 +125,15 @@ public class UserService {
         }
         return false;
     }
+
+    // view all account details
+    public static Document viewAllAccountDetails() {
+        return (Document) DBUtil.getAllDocument(collection);
+    }
+
+    // view account details
+    public static String viewAccountDetails(String username) {
+        Document query = new Document("username", username);
+        return DBUtil.getDocument(collection, query).toJson();
+    }
 }

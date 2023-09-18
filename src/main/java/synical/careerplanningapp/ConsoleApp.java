@@ -10,13 +10,16 @@ import static synical.careerplanningapp.lib.Function.*;
 
 public class ConsoleApp {
     private static String username = "";
-    private static final MongoCollection<Document> userCollection = DBUtil.getCollection("user");
+    private static MongoCollection<Document> userCollection;
 
     public static void main(String[] args) {
         print("Career planning app has started.");
 
         // establish database connection
         DBUtil.init();
+
+        // setup collection var
+        userCollection = DBUtil.getCollection("user");
 
         // start user log in menu
         login();
@@ -85,12 +88,27 @@ public class ConsoleApp {
                 int subOption = -1;
 
                 while (subOption != 0) {
-                    subOption = Function.getUserInputInt("Enter option > ");
-
                     if (isAdmin) {
                         displayAdminUserMenu();
-                    } else {
+
+                        subOption = Function.getUserInputInt("Enter option > ");
+                        if (subOption == 1) {
+                            String details = String.valueOf(UserService.viewAccountDetails(username));
+                            print(details);
+                        }
+                        else if (subOption == 2) {
+                            String details = String.valueOf(UserService.viewAllAccountDetails());
+                            print(details);
+                        }
+                    }
+                    else {
                         displayMemberUserMenu();
+
+                        subOption = Function.getUserInputInt("Enter option > ");
+                        if (subOption == 1) {
+                            String details = UserService.viewAccountDetails(username);
+                            print(details);
+                        }
                     }
                 }
             }

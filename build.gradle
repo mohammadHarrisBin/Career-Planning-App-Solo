@@ -44,6 +44,10 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
+application {
+    mainClass = "synical.careerplanningapp.ConsoleApp"
+}
+
 test {
     useJUnitPlatform()
 }

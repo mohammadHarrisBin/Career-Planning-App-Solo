@@ -56,6 +56,11 @@ public class DBUtil {
         return collection.find(query).first();
     }
 
+    // get all document entry
+    public static Document getAllDocument(MongoCollection<Document> collection) {
+        return (Document) collection.find();
+    }
+
     // insert entry
     public static InsertOneResult insertOne(MongoCollection<Document> collection, Document document) {
         return collection.insertOne(document);
