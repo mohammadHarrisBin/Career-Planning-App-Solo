@@ -19,55 +19,65 @@ class UserServiceTest {
 
     @Test
     void registerTest() {
-        // register member with normal case
-        assertTrue(register("tester", "password", "member"), "Failed to register user account 1");
+        // test register account long username
+        assertFalse(register("ThisUsernameIsWayTooLong", "Pass4word!", "member"), "Able to register account that exceeds username length!");
 
-        // duplicate entry member / admin with normal case
-        assertFalse(register("tester", "password", "member"), "Able to register account with duplicate username 1");
-        assertFalse(register("tester", "password", "admin"), "Able to register account with duplicate username with different role 1");
+        // test register account with invalid password requirements
+        assertFalse(register("username", "pass", "member"), "Able to register account that has password too short!");
+        assertFalse(register("username", "password", "member"), "Able to register account that has no uppercase, digits, symbols!");
+        assertFalse(register("username", "PASSWORD", "member"), "Able to register account that has no lowercase, digits, symbols!");
+        assertFalse(register("username", "Password", "member"), "Able to register account that has no digits or symbols!");
+        assertFalse(register("username", "Pass4word", "member"), "Able to register account that has no symbols!");
 
-        // register admin with all caps
-        assertTrue(register("Tester", "password", "admin"), "Failed to register user account 2");
+        // test register account with valid requirements
+        assertTrue(register("tester", "Pass4word!", "member"), "Failed to register user account 1!");
+        assertTrue(register("Tester", "Th!sIsAValidPass4Word", "admin"), "Failed to register user account 2!");
+        assertTrue(register("OnlyTwentyCharacters", "Blu3Colors1?", "member"), "Failed to register user account 3!");
 
-        // duplicate entry member / admin with all caps
-        assertFalse(register("Tester", "password", "member"), "Able to register account with duplicate username 2");
-        assertFalse(register("Tester", "password", "admin"), "Able to register account with duplicate username with different role 2");
+        // test register account with duplicate entry member / admin
+        assertFalse(register("tester", "Pass4word!", "member"), "Able to register account with duplicate username 1!");
+        assertFalse(register("tester", "Pass4word!", "admin"), "Able to register account with duplicate username with different role 1!");
+
+        // test register account with duplicate entry member / admin with all caps
+        assertFalse(register("Tester", "Pass4word!", "member"), "Able to register account with duplicate username 2!");
+        assertFalse(register("Tester", "Pass4word!", "admin"), "Able to register account with duplicate username with different role 2!");
     }
 
     @Test
     void loginTest() {
-        // test for successful login
+        // test log in for existing account
         assertTrue(login("admin", "admin"), "Failed to login to account!");
 
-        // test for account that does not exist
+        // test log in for non-existent account
         assertFalse(login("non-existent", "non-existent"), "Able to login to non-existent account!");
 
-        // test for
+        // test log in with wrong password
         assertFalse(login("admin", "wrong-password"), "Able to login to account with wrong password!");
     }
 
     @Test
     void deleteUserTest() {
-        // delete account
+        // test delete existing account
         assertTrue(deleteUser("tester"), "Failed to delete user account 1!");
         assertTrue(deleteUser("Tester"), "Failed to delete user account 2!");
+        assertTrue(deleteUser("OnlyTwentyCharacters"), "Failed to delete user account 3!");
 
-        // non-existent account
+        // test delete non-existent account
         assertFalse(deleteUser("non-existent"), "Able to delete a non-existent account!");
     }
 
     @Test
     void viewAccountDetailsTest() {
-        // view valid account details
+        // test view account details for existing user
         assertNotNull(viewAccountDetails("admin"), "Unable to view admin account details!");
 
-        // view not valid account details
+        // test view account details for non-existent user
         assertNull(viewAccountDetails("non-existent"), "Got account details for non-existent account!");
     }
 
     @Test
     void viewAllAccountDetailsTest() {
-        // view valid account details
+        // test view all account details
         assertNotNull(viewAllAccountDetails(), "Unable to view admin account details!");
     }
 }

@@ -46,25 +46,31 @@ public class ConsoleApp {
                         username = iUsername;
                         start();
                     }
-                }
-                else if (option == 2) {
+                } else if (option == 2) {
                     // sign up new account
                     header("registering new account.");
 
                     String iUsername = Function.getUserInputString("Username > ");
                     String iPassword = Function.getUserInputString("Password > ");
 
+                    // keep asking until valid
+                    boolean valid = UserService.sanityChecker(iUsername, iPassword);
+                    while (!valid) {
+                        iUsername = Function.getUserInputString("Username > ");
+                        iPassword = Function.getUserInputString("Password > ");
+
+                        valid = UserService.sanityChecker(iUsername, iPassword);
+                    }
+
                     UserService.register(iUsername, iPassword, "member");
-                }
-                else if (option == 3) {
+                } else if (option == 3) {
                     // stops application
                     print("Career planning application has stopped.");
 
                     // close database connection
                     DBUtil.close();
                     return;
-                }
-                else {
+                } else {
                     // invalid option
                     warn("Invalid option. Re-enter choice.");
                 }
@@ -94,51 +100,43 @@ public class ConsoleApp {
                         subOption = Function.getUserInputInt("Enter option > ");
                         if (subOption == 1) {
                             UserService.viewAccountDetails(username);
-                        }
-                        else if (subOption == 2) {
+                        } else if (subOption == 2) {
                             UserService.viewAllAccountDetails();
                         }
-                    }
-                    else {
+                    } else {
                         displayMemberUserMenu();
 
                         subOption = Function.getUserInputInt("Enter option > ");
                         if (subOption == 1) {
-                           UserService.viewAccountDetails(username);
+                            UserService.viewAccountDetails(username);
                         }
                     }
                 }
-            }
-            else if (mainOption == 2) {
+            } else if (mainOption == 2) {
                 // job opportunity menu
                 // TODO: display sub choices for job opportunity
                 print("display job opportunity menu");
-            }
-            else if (mainOption == 3) {
+            } else if (mainOption == 3) {
                 // resume menu
                 // TODO: display sub choices for resume
 
                 print("display resume menu");
-            }
-            else if (mainOption == 4) {
+            } else if (mainOption == 4) {
                 // skills menu
                 // TODO: display sub choices for skills
 
                 print("display skills menu");
-            }
-            else if (mainOption == 5) {
+            } else if (mainOption == 5) {
                 // career menu
                 // TODO: display sub choices for career
 
                 print("display career menu");
-            }
-            else if (mainOption == 6) {
+            } else if (mainOption == 6) {
                 // assessment menu
                 // TODO: display sub choices for assessment
 
                 print("display assessment menu");
-            }
-            else if (mainOption == 7) {
+            } else if (mainOption == 7) {
                 // log out of account
 
                 print("Logged out.");
@@ -147,8 +145,7 @@ public class ConsoleApp {
                 // bring user back to log in menu
                 login();
                 return;
-            }
-            else {
+            } else {
                 // invalid option
                 print("Invalid option. Re-enter option.");
             }

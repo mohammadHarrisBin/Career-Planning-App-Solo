@@ -15,8 +15,15 @@ public class UserService {
     private static final int MAX_LOGIN_ATTEMPTS = 3;
     private static final MongoCollection<Document> collection = DBUtil.getCollection("user");
 
+    private static final String REGEX_DIGIT = "^.*[0-9].*";
+    private static final String REGEX_LOWERCASE = ".*[a-z].*";
+    private static final String REGEX_UPPERCASE = ".*[A-Z].*";
+    private static final String REGEX_SYMBOLS = ".*[!@#$&*?].*";
+
     // register new user account
     public static boolean register(String iUsername, String iPassword, String accountType) {
+        if (!sanityChecker(iUsername, iPassword)) return false;
+
         // check for any existing username
         Document query = new Document("username", iUsername);
         Document document = DBUtil.getDocument(collection, query);
@@ -36,12 +43,10 @@ public class UserService {
             if (result.wasAcknowledged()) {
                 print("Successfully registered new user account!");
                 return true;
-            }
-            else {
+            } else {
                 error("Failed to register new user account.");
             }
-        }
-        else {
+        } else {
             error("Username '" + iUsername + "' already exist. Try another username.");
         }
         return false;
@@ -61,12 +66,10 @@ public class UserService {
             if (result.wasAcknowledged()) {
                 print("Successfully deleted user account: " + iUsername + "!");
                 return true;
-            }
-            else {
+            } else {
                 error("Failed to delete user account: " + iUsername + ".");
             }
-        }
-        else {
+        } else {
             error("Could not find account with the username: " + iUsername + ".");
         }
         return false;
@@ -98,8 +101,7 @@ public class UserService {
                     print("Successfully log in to account!");
                     return true;
                 }
-            }
-            else {
+            } else {
                 Document updateAttempts = new Document("$set", new Document("attempts", attempts += 1));
                 UpdateResult result = DBUtil.updateOne(collection, query, updateAttempts);
 
@@ -112,16 +114,14 @@ public class UserService {
                             error("You have entered the wrong password too many times. This account has been locked.");
                             error("Please contact the administrator to reset your password.");
                         }
-                    }
-                    else {
+                    } else {
                         warn("Incorrect password. Try again.");
                         warn("You have " + (MAX_LOGIN_ATTEMPTS - attempts) + " attempts left.");
                     }
                     return false;
                 }
             }
-        }
-        else {
+        } else {
             error("Could not find account with the username: " + iUsername + ".");
         }
         return false;
@@ -138,8 +138,7 @@ public class UserService {
 
         if (output != null) {
             output = output.trim();
-        }
-        else {
+        } else {
             error("There is no data in the collection '" + collection.getNamespace() + "'!");
         }
 
@@ -148,16 +147,50 @@ public class UserService {
     }
 
     // view account details
-    public static String viewAccountDetails(String username) {
-        Document query = new Document("username", username);
+    public static String viewAccountDetails(String iUsername) {
+        Document query = new Document("username", iUsername);
         Document document = DBUtil.getDocument(collection, query);
         if (document != null) {
             print(document.toJson());
             return document.toJson();
-        }
-        else {
-            error("Could not find username '" + username + "' account details!");
+        } else {
+            error("Could not find username '" + iUsername + "' account details!");
         }
         return null;
+    }
+
+    // password validator
+    public static boolean sanityChecker(String iUsername, String iPassword) {
+        if (iUsername.length() > 20) {
+            warn("Username can only be 20 characters long.");
+            return false;
+        }
+
+        if (iPassword.length() < 8) {
+            warn("Password should be at least 8 characters long.");
+            return false;
+        }
+
+        if (!iPassword.matches(REGEX_UPPERCASE)) {
+            warn("Password should contain at least one uppercase character.");
+            return false;
+        }
+
+        if (!iPassword.matches(REGEX_LOWERCASE)) {
+            warn("Password should contain at least one lowercase character.");
+            return false;
+        }
+
+        if (!iPassword.matches(REGEX_DIGIT)) {
+            warn("Password should contain at least one digit.");
+            return false;
+        }
+
+        if (!iPassword.matches(REGEX_SYMBOLS)) {
+            warn("Password should contain at least one of these symbols: '!, @, #, $, &, *, ?'.");
+            return false;
+        }
+
+        return true;
     }
 }
