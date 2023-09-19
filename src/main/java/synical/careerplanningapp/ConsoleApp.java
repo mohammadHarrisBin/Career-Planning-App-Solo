@@ -93,12 +93,10 @@ public class ConsoleApp {
 
                         subOption = Function.getUserInputInt("Enter option > ");
                         if (subOption == 1) {
-                            String details = String.valueOf(UserService.viewAccountDetails(username));
-                            print(details);
+                            UserService.viewAccountDetails(username);
                         }
                         else if (subOption == 2) {
-                            String details = String.valueOf(UserService.viewAllAccountDetails());
-                            print(details);
+                            UserService.viewAllAccountDetails();
                         }
                     }
                     else {
@@ -106,8 +104,7 @@ public class ConsoleApp {
 
                         subOption = Function.getUserInputInt("Enter option > ");
                         if (subOption == 1) {
-                            String details = UserService.viewAccountDetails(username);
-                            print(details);
+                           UserService.viewAccountDetails(username);
                         }
                     }
                 }

@@ -3,8 +3,6 @@ package synical.careerplanningapp.services;
 import org.junit.jupiter.api.*;
 import synical.careerplanningapp.lib.DBUtil;
 
-import java.security.NoSuchAlgorithmException;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static synical.careerplanningapp.services.UserService.*;
 
@@ -38,13 +36,13 @@ class UserServiceTest {
 
     @Test
     void loginTest() {
-        // exist
+        // test for successful login
         assertTrue(login("admin", "admin"), "Failed to login to account!");
 
-        // non existent
-        assertFalse(login("nonexistent", "nonexistent"), "Able to login to non-existent account!");
+        // test for account that does not exist
+        assertFalse(login("non-existent", "non-existent"), "Able to login to non-existent account!");
 
-        // correct username, incorrect password
+        // test for
         assertFalse(login("admin", "wrong-password"), "Able to login to account with wrong password!");
     }
 
@@ -56,5 +54,20 @@ class UserServiceTest {
 
         // non-existent account
         assertFalse(deleteUser("non-existent"), "Able to delete a non-existent account!");
+    }
+
+    @Test
+    void viewAccountDetailsTest() {
+        // view valid account details
+        assertNotNull(viewAccountDetails("admin"), "Unable to view admin account details!");
+
+        // view not valid account details
+        assertNull(viewAccountDetails("non-existent"), "Got account details for non-existent account!");
+    }
+
+    @Test
+    void viewAllAccountDetailsTest() {
+        // view valid account details
+        assertNotNull(viewAllAccountDetails(), "Unable to view admin account details!");
     }
 }

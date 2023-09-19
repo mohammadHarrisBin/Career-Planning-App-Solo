@@ -1,5 +1,6 @@
 package synical.careerplanningapp.services;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -37,11 +38,11 @@ public class UserService {
                 return true;
             }
             else {
-                warn("Failed to register new user account.");
+                error("Failed to register new user account.");
             }
         }
         else {
-            warn("Username '" + iUsername + "' already exist. Try another username.");
+            error("Username '" + iUsername + "' already exist. Try another username.");
         }
         return false;
     }
@@ -62,11 +63,11 @@ public class UserService {
                 return true;
             }
             else {
-                warn("Failed to delete user account: " + iUsername + ".");
+                error("Failed to delete user account: " + iUsername + ".");
             }
         }
         else {
-            warn("Could not find account with the username: " + iUsername + ".");
+            error("Could not find account with the username: " + iUsername + ".");
         }
         return false;
     }
@@ -121,19 +122,42 @@ public class UserService {
             }
         }
         else {
-            warn("Could not find account with the username: " + iUsername + ".");
+            error("Could not find account with the username: " + iUsername + ".");
         }
         return false;
     }
 
     // view all account details
-    public static Document viewAllAccountDetails() {
-        return (Document) DBUtil.getAllDocument(collection);
+    public static String viewAllAccountDetails() {
+        String output = null;
+        FindIterable<Document> documents = DBUtil.getAllDocument(collection);
+
+        for (Document document : documents) {
+            output += document.toJson() + "\n";
+        }
+
+        if (output != null) {
+            output = output.trim();
+        }
+        else {
+            error("There is no data in the collection '" + collection.getNamespace() + "'!");
+        }
+
+        print(output);
+        return output;
     }
 
     // view account details
     public static String viewAccountDetails(String username) {
         Document query = new Document("username", username);
-        return DBUtil.getDocument(collection, query).toJson();
+        Document document = DBUtil.getDocument(collection, query);
+        if (document != null) {
+            print(document.toJson());
+            return document.toJson();
+        }
+        else {
+            error("Could not find username '" + username + "' account details!");
+        }
+        return null;
     }
 }

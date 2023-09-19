@@ -57,8 +57,8 @@ public class DBUtil {
     }
 
     // get all document entry
-    public static Document getAllDocument(MongoCollection<Document> collection) {
-        return (Document) collection.find();
+    public static FindIterable<Document> getAllDocument(MongoCollection<Document> collection) {
+        return collection.find();
     }
 
     // insert entry
