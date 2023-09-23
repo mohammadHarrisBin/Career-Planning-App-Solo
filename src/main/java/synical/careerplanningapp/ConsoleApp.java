@@ -102,6 +102,15 @@ public class ConsoleApp {
                             UserService.viewAccountDetails(username);
                         } else if (subOption == 2) {
                             UserService.viewAllAccountDetails();
+                        } else if (subOption == 3) {
+                            boolean success = UserService.deleteUser(username);
+
+                            // user deleted their account
+                            // bring user back to log in screen
+                            if (success) {
+                                login();
+                                return;
+                            }
                         }
                     } else {
                         displayMemberUserMenu();

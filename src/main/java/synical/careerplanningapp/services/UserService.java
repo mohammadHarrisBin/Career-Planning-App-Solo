@@ -9,6 +9,11 @@ import org.bson.Document;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import static synical.careerplanningapp.lib.Function.*;
 
 public class UserService {
@@ -24,6 +29,9 @@ public class UserService {
     public static boolean register(String iUsername, String iPassword, String accountType) {
         if (!sanityChecker(iUsername, iPassword)) return false;
 
+        // get timestamp
+        long timestamp = Instant.now().atZone(ZoneId.of("GMT+8")).toInstant().toEpochMilli();
+
         // check for any existing username
         Document query = new Document("username", iUsername);
         Document document = DBUtil.getDocument(collection, query);
@@ -35,7 +43,9 @@ public class UserService {
                     .append("password", Function.encode(iPassword))
                     .append("accountType", accountType)
                     .append("locked", false)
-                    .append("attempts", 0);
+                    .append("attempts", 0)
+                    .append("created", timestamp)
+                    .append("lastOnline", timestamp);
 
             InsertOneResult result = DBUtil.insertOne(collection, userDocument);
 
@@ -83,6 +93,8 @@ public class UserService {
 
         // user account exist
         if (document != null) {
+            long timestamp = Instant.now().atZone(ZoneId.of("GMT+8")).toInstant().toEpochMilli();
+
             String password = document.getString("password");
             boolean locked = document.getBoolean("locked");
             int attempts = document.getInteger("attempts");
@@ -95,11 +107,26 @@ public class UserService {
 
             if (Function.encode(iPassword).equals(password)) {
                 Document resetAttempts = new Document("$set", new Document("attempts", 0));
-                UpdateResult result = DBUtil.updateOne(collection, query, resetAttempts);
+                UpdateResult resetResult = DBUtil.updateOne(collection, query, resetAttempts);
 
-                if (result.wasAcknowledged()) {
+                Document lastOnline = new Document("$set", new Document("lastOnline", timestamp));
+                UpdateResult updateLastOnlineResult = DBUtil.updateOne(collection, query, lastOnline);
+
+                if (resetResult.wasAcknowledged() && updateLastOnlineResult.wasAcknowledged()) {
+                    if (!(resetResult.getMatchedCount() > 0)) {
+                        error("User attempts did not reset!");
+                        return false;
+                    }
+
+                    if (!(updateLastOnlineResult.getModifiedCount() > 0)) {
+                        error("User last online did not update!");
+                        return false;
+                    }
+
                     print("Successfully log in to account!");
                     return true;
+                } else {
+                    error("Update to database was not acknowledged while updating user log in!");
                 }
             } else {
                 Document updateAttempts = new Document("$set", new Document("attempts", attempts += 1));
