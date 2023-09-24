@@ -4,9 +4,6 @@ import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertOneResult;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import static synical.careerplanningapp.lib.Function.error;
@@ -62,17 +59,17 @@ public class DBUtil {
     }
 
     // insert entry
-    public static InsertOneResult insertOne(MongoCollection<Document> collection, Document document) {
-        return collection.insertOne(document);
+    public static boolean insertOne(MongoCollection<Document> collection, Document document) {
+        return collection.insertOne(document).getInsertedId() != null;
     }
 
     // delete entry
-    public static DeleteResult deleteOne(MongoCollection<Document> collection, Document document) {
-        return collection.deleteOne(document);
+    public static boolean deleteOne(MongoCollection<Document> collection, Document document) {
+        return collection.deleteOne(document).getDeletedCount() > 0;
     }
 
     // update entry
-    public static UpdateResult updateOne(MongoCollection<Document> collection, Document query, Document document) {
-        return collection.updateOne(query, document);
+    public static boolean updateOne(MongoCollection<Document> collection, Document query, Document document) {
+        return collection.updateOne(query, document).getMatchedCount() > 0;
     }
 }

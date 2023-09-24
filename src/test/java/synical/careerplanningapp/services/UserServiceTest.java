@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static synical.careerplanningapp.services.UserService.*;
 
 class UserServiceTest {
+    private static final String GLOBAL_PASSWORD = "Cy@nColors1?";
+
     @BeforeAll
     static void beforeAll() {
         DBUtil.init();
@@ -20,7 +22,7 @@ class UserServiceTest {
     @Test
     void registerTest() {
         // test register account long username
-        assertFalse(register("ThisUsernameIsWayTooLong", "Pass4word!", "member"), "Able to register account that exceeds username length!");
+        assertFalse(register("ThisUsernameIsWayTooLong", GLOBAL_PASSWORD, "member"), "Able to register account that exceeds username length!");
 
         // test register account with invalid password requirements
         assertFalse(register("username", "pass", "member"), "Able to register account that has password too short!");
@@ -30,23 +32,23 @@ class UserServiceTest {
         assertFalse(register("username", "Pass4word", "member"), "Able to register account that has no symbols!");
 
         // test register account with valid requirements
-        assertTrue(register("tester", "Pass4word!", "member"), "Failed to register user account 1!");
+        assertTrue(register("tester", GLOBAL_PASSWORD, "member"), "Failed to register user account 1!");
         assertTrue(register("Tester", "Th!sIsAValidPass4Word", "admin"), "Failed to register user account 2!");
         assertTrue(register("OnlyTwentyCharacters", "Blu3Colors1?", "member"), "Failed to register user account 3!");
 
         // test register account with duplicate entry member / admin
-        assertFalse(register("tester", "Pass4word!", "member"), "Able to register account with duplicate username 1!");
-        assertFalse(register("tester", "Pass4word!", "admin"), "Able to register account with duplicate username with different role 1!");
+        assertFalse(register("tester", GLOBAL_PASSWORD, "member"), "Able to register account with duplicate username 1!");
+        assertFalse(register("tester", GLOBAL_PASSWORD, "admin"), "Able to register account with duplicate username with different role 1!");
 
         // test register account with duplicate entry member / admin with all caps
-        assertFalse(register("Tester", "Pass4word!", "member"), "Able to register account with duplicate username 2!");
-        assertFalse(register("Tester", "Pass4word!", "admin"), "Able to register account with duplicate username with different role 2!");
+        assertFalse(register("Tester", GLOBAL_PASSWORD, "member"), "Able to register account with duplicate username 2!");
+        assertFalse(register("Tester", GLOBAL_PASSWORD, "admin"), "Able to register account with duplicate username with different role 2!");
     }
 
     @Test
     void loginTest() {
         // test log in for existing account
-        assertTrue(login("admin", "admin"), "Failed to login to account!");
+        assertTrue(login("admin", GLOBAL_PASSWORD), "Failed to login to account!");
 
         // test log in for non-existent account
         assertFalse(login("non-existent", "non-existent"), "Able to login to non-existent account!");
