@@ -2,6 +2,8 @@ package synical.careerplanningapp.lib;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.regex.Pattern;
 
 public class Function {
@@ -127,5 +129,9 @@ public class Function {
             e.printStackTrace();
         }
         return text;
+    }
+
+    public static long getCurrentTimestamp() {
+        return Instant.now().atZone(ZoneId.of("GMT+8")).toInstant().toEpochMilli();
     }
 }

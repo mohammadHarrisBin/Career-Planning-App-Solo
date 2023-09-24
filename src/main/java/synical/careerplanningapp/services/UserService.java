@@ -6,9 +6,6 @@ import org.bson.Document;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
-import java.time.Instant;
-import java.time.ZoneId;
-
 import static synical.careerplanningapp.lib.Function.*;
 
 public class UserService {
@@ -25,7 +22,7 @@ public class UserService {
         if (!sanityChecker(iUsername, iPassword)) return false;
 
         // get timestamp
-        long timestamp = Instant.now().atZone(ZoneId.of("GMT+8")).toInstant().toEpochMilli();
+        long timestamp = Function.getCurrentTimestamp();
 
         // check for any existing username
         Document query = new Document("username", iUsername);
@@ -88,7 +85,7 @@ public class UserService {
 
         // user account exist
         if (document != null) {
-            long timestamp = Instant.now().atZone(ZoneId.of("GMT+8")).toInstant().toEpochMilli();
+            long timestamp = Function.getCurrentTimestamp();
 
             String password = document.getString("password");
             boolean locked = document.getBoolean("locked");
