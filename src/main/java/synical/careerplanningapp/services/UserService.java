@@ -2,17 +2,12 @@ package synical.careerplanningapp.services;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertOneResult;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
-import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import static synical.careerplanningapp.lib.Function.*;
 
@@ -47,10 +42,10 @@ public class UserService {
                     .append("created", timestamp)
                     .append("lastOnline", timestamp);
 
-            InsertOneResult result = DBUtil.insertOne(collection, userDocument);
+            boolean result = DBUtil.insertOne(collection, userDocument);
 
             // check if insert is successful
-            if (result.wasAcknowledged()) {
+            if (result) {
                 print("Successfully registered new user account!");
                 return true;
             } else {
@@ -70,10 +65,10 @@ public class UserService {
 
         // user account exist
         if (document != null) {
-            DeleteResult result = DBUtil.deleteOne(collection, document);
+            boolean result = DBUtil.deleteOne(collection, document);
 
             // check if delete is successful
-            if (result.wasAcknowledged()) {
+            if (result) {
                 print("Successfully deleted user account: " + iUsername + "!");
                 return true;
             } else {
@@ -107,37 +102,27 @@ public class UserService {
 
             if (Function.encode(iPassword).equals(password)) {
                 Document resetAttempts = new Document("$set", new Document("attempts", 0));
-                UpdateResult resetResult = DBUtil.updateOne(collection, query, resetAttempts);
+                boolean resetResult = DBUtil.updateOne(collection, query, resetAttempts);
 
                 Document lastOnline = new Document("$set", new Document("lastOnline", timestamp));
-                UpdateResult updateLastOnlineResult = DBUtil.updateOne(collection, query, lastOnline);
+                boolean updateLastOnlineResult = DBUtil.updateOne(collection, query, lastOnline);
 
-                if (resetResult.wasAcknowledged() && updateLastOnlineResult.wasAcknowledged()) {
-                    if (!(resetResult.getMatchedCount() > 0)) {
-                        error("User attempts did not reset!");
-                        return false;
-                    }
-
-                    if (!(updateLastOnlineResult.getModifiedCount() > 0)) {
-                        error("User last online did not update!");
-                        return false;
-                    }
-
+                if (resetResult && updateLastOnlineResult) {
                     print("Successfully log in to account!");
                     return true;
                 } else {
-                    error("Update to database was not acknowledged while updating user log in!");
+                    error("Failed to update database while user log in!");
                 }
             } else {
                 Document updateAttempts = new Document("$set", new Document("attempts", attempts += 1));
-                UpdateResult result = DBUtil.updateOne(collection, query, updateAttempts);
+                boolean result = DBUtil.updateOne(collection, query, updateAttempts);
 
-                if (result.wasAcknowledged()) {
+                if (result) {
                     if (attempts >= MAX_LOGIN_ATTEMPTS) {
                         Document setLocked = new Document("$set", new Document("locked", true));
-                        UpdateResult lockedResult = DBUtil.updateOne(collection, query, setLocked);
+                        boolean lockedResult = DBUtil.updateOne(collection, query, setLocked);
 
-                        if (lockedResult.wasAcknowledged()) {
+                        if (lockedResult) {
                             error("You have entered the wrong password too many times. This account has been locked.");
                             error("Please contact the administrator to reset your password.");
                         }

@@ -62,17 +62,17 @@ public class DBUtil {
     }
 
     // insert entry
-    public static InsertOneResult insertOne(MongoCollection<Document> collection, Document document) {
-        return collection.insertOne(document);
+    public static boolean insertOne(MongoCollection<Document> collection, Document document) {
+        return collection.insertOne(document).getInsertedId() != null;
     }
 
     // delete entry
-    public static DeleteResult deleteOne(MongoCollection<Document> collection, Document document) {
-        return collection.deleteOne(document);
+    public static boolean deleteOne(MongoCollection<Document> collection, Document document) {
+        return collection.deleteOne(document).getDeletedCount() > 0;
     }
 
     // update entry
-    public static UpdateResult updateOne(MongoCollection<Document> collection, Document query, Document document) {
-        return collection.updateOne(query, document);
+    public static boolean updateOne(MongoCollection<Document> collection, Document query, Document document) {
+        return collection.updateOne(query, document).getMatchedCount() > 0;
     }
 }
