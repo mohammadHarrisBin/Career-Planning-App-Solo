@@ -2,13 +2,18 @@ package synical.careerplanningapp;
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
-import synical.careerplanningapp.services.UserService;
 import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
+import synical.careerplanningapp.services.JobService;
+import synical.careerplanningapp.services.UserService;
+
+import java.time.LocalDateTime;
 
 import static synical.careerplanningapp.lib.Function.*;
 
 public class ConsoleApp {
+    private static final boolean DEBUG = true;
+
     private static String username = "";
     private static MongoCollection<Document> userCollection;
 
@@ -38,10 +43,15 @@ public class ConsoleApp {
                     // log in option
                     header("logging in to account.");
 
-                    String iUsername = Function.getUserInputString("Username > ");
-                    String iPassword = Function.getUserInputString("Password > ");
+                    boolean success = false;
+                    String iUsername = "admin";
+                    String iPassword = "Cy@nColors1?";
+                    if (!DEBUG) {
+                        iUsername = Function.getUserInputString("Username > ");
+                        iPassword = Function.getUserInputString("Password > ");
+                    }
+                    success = UserService.login(iUsername, iPassword);
 
-                    boolean success = UserService.login(iUsername, iPassword);
                     if (success) {
                         username = iUsername;
                         start();
@@ -125,6 +135,46 @@ public class ConsoleApp {
                 // job opportunity menu
                 // TODO: display sub choices for job opportunity
                 print("display job opportunity menu");
+
+                int subOption = -1;
+
+                while (subOption != 0) {
+                    if (isAdmin) {
+                        displayAdminJobMenu();
+
+                        subOption = Function.getUserInputInt("Enter option > ");
+                        if (subOption == 1) {
+                            JobService.viewJobOpportunities();
+                        } else if (subOption == 2) {
+                            String title = Function.getUserInputString("Enter job title > ");
+                            String description = Function.getUserInputString("Enter job description > ");
+                            String companyName = Function.getUserInputString("Enter company name > ");
+                            String addressLine1 = Function.getUserInputString("Enter address line 1 > ");
+                            String addressLine2 = Function.getUserInputString("Enter address line 2 > ");
+                            double salaryMin = Function.getUserInputDouble("Enter min. salary > $");
+                            double salaryMax = Function.getUserInputDouble("Enter max. salary > $");
+                            String[] qualifications = Function.getUserInputStringList("Enter qualifications");
+                            String[] skills = Function.getUserInputStringList("Enter skills");
+                            String responsibilities = Function.getUserInputString("Enter responsibilities > ");
+                            String education = Function.getUserInputString("Enter education required > ");
+                            String applicationDateline = Function.getUserInputString("Enter application dateline (dd/mm/yyyy) > "); // November 1, 2023
+                            int applicationProcessTime = Function.getUserInputInt("Enter application processing time (days) > "); // 7 days for the application process
+                            boolean requiresTravel = Function.getUserInputBoolean("Requires travel? (true/false) > ");
+                            boolean allowsRemoteWork = Function.getUserInputBoolean("Allow remote work? (true/false) > ");
+                            String languageRequirements = Function.getUserInputString("Language requirements > ");
+                            String physicalRequirements = Function.getUserInputString("Physical requirements > ");
+
+                            JobService.register(title, description, companyName, addressLine1, addressLine2, salaryMin, salaryMax, qualifications, skills, responsibilities, education, applicationDateline, applicationProcessTime, requiresTravel, allowsRemoteWork, languageRequirements, physicalRequirements, username);
+                        }
+                    } else {
+                        displayMemberJobMenu();
+
+                        subOption = Function.getUserInputInt("Enter option > ");
+                        if (subOption == 1) {
+                            JobService.viewJobOpportunities();
+                        }
+                    }
+                }
             } else if (mainOption == 3) {
                 // resume menu
                 // TODO: display sub choices for resume
@@ -186,6 +236,20 @@ public class ConsoleApp {
     private static void displayAdminUserMenu() {
         String title = "USER MENU";
         String[] options = {"View account details", "View all accounts", "Delete account", "<<< Back"};
+        Function.displayMenu(title, options);
+    }
+
+    // member job opportunity menu
+    private static void displayMemberJobMenu() {
+        String title = "JOB OPPORTUNITY MENU";
+        String[] options = {"View job opportunity", "<<< Back"};
+        Function.displayMenu(title, options);
+    }
+
+    // admin job opportunity menu
+    private static void displayAdminJobMenu() {
+        String title = "JOB OPPORTUNITY MENU";
+        String[] options = {"View job opportunity", "Add job opportunity", "Delete job opportunity", "<<< Back"};
         Function.displayMenu(title, options);
     }
 }

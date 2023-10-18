@@ -6,6 +6,7 @@ import synical.careerplanningapp.lib.DBUtil;
 import synical.careerplanningapp.lib.Function;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static synical.careerplanningapp.lib.Function.error;
 import static synical.careerplanningapp.lib.Function.print;
@@ -13,8 +14,8 @@ import static synical.careerplanningapp.lib.Function.print;
 public class JobService {
     private static final MongoCollection<Document> collection = DBUtil.getCollection("job_opportunity");
 
-    public static boolean register(String title, String description, String companyName, String addressLine1, String addressLine2, double salaryMin, double salaryMax, String[] benefits, String[] qualifications, String[] responsibilities, String[] skills,
-                                   String education, LocalDateTime applicationDateline, int applicationProcessTime, boolean requiresTravel, boolean allowsRemoteWork, String languageRequirements, String physicalRequirements) {
+    public static boolean register(String title, String description, String companyName, String addressLine1, String addressLine2, double salaryMin, double salaryMax, String[] qualifications, String[] skills, String responsibilities,
+                                   String education, String applicationDateline, int applicationProcessTime, boolean requiresTravel, boolean allowsRemoteWork, String languageRequirements, String physicalRequirements, String createdBy) {
 
         // get timestamp
         long timestamp = Function.getCurrentTimestamp();
@@ -33,17 +34,18 @@ public class JobService {
                             .append("addressLine2", addressLine2))
                     .append("salary", new Document("salaryMin", salaryMin)
                             .append("salaryMax", salaryMax))
-                    .append("benefits", benefits)
-                    .append("qualifications", qualifications)
+                    .append("qualifications", Arrays.asList(qualifications))
+                    .append("skills", Arrays.asList(skills))
                     .append("responsibilities", responsibilities)
-                    .append("skills", skills)
                     .append("education", education)
                     .append("dateline", applicationDateline)
                     .append("processTime", applicationProcessTime)
                     .append("requiresTravel", requiresTravel)
                     .append("allowsRemoteWork", allowsRemoteWork)
                     .append("languageRequirements", languageRequirements)
-                    .append("physicalRequirements", physicalRequirements);
+                    .append("physicalRequirements", physicalRequirements)
+                    .append("createdBy", createdBy)
+                    .append("createdAt", timestamp);
 
             boolean result = DBUtil.insertOne(collection, jobDocument);
 
@@ -59,5 +61,8 @@ public class JobService {
         }
 
         return false;
+    }
+
+    public static void viewJobOpportunities() {
     }
 }
