@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class Function {
@@ -71,6 +73,43 @@ public class Function {
         }
 
         return input;
+    }
+
+    public static boolean getUserInputBoolean(String prompt) {
+        boolean input = false;
+        boolean valid = false;
+
+        while (!valid) {
+            String temp = getUserInputString(prompt);
+            if (temp.equalsIgnoreCase("true")) {
+                input = true;
+                valid = true;
+            } else if (temp.equalsIgnoreCase("false")) {
+                valid = true;
+            } else {
+                warn("Invalid input");
+            }
+        }
+
+        return input;
+    }
+
+    public static String[] getUserInputStringList(String title) {
+        ArrayList<String> inputList = new ArrayList<String>();
+
+        int counter = 1;
+        String input = "";
+
+        while (!input.equalsIgnoreCase("-1")) {
+            input = getUserInputString(String.format("%s %d (-1 to exit) > ", title, counter));
+
+            if (!input.equalsIgnoreCase("-1")) {
+                inputList.add(input);
+                counter++;
+            }
+        }
+
+        return inputList.toArray(new String[0]);
     }
 
     public static void line(String character, int length) {
