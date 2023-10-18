@@ -36,7 +36,7 @@ public class UserService {
                     .append("accountType", accountType)
                     .append("locked", false)
                     .append("attempts", 0)
-                    .append("created", timestamp)
+                    .append("createdAt", timestamp)
                     .append("lastOnline", timestamp);
 
             boolean result = DBUtil.insertOne(collection, userDocument);
